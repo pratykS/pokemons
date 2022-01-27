@@ -31,16 +31,17 @@ const PokemonListComponent = () => {
     const [prevUrl, setPrevUrl] = useState('');
     const [loading, setLoading] = useState(true);
 
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState(() => {
+        const saved = localStorage.getItem("searchTerm");
+        return saved || "";
+    });
 
     const [nameSort, toggleNameSort] = useState(false);
     const [heightSort, toggleHeightSort] = useState(false);
     const [weightSort, toggleWeightSort] = useState(false);
     const [selectedOption, setSelectedOption] = useState(options[0].value);
     const initialURL = `${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${0}`;
-    const [url, setUrl] = useState(initialURL)
-
-
+    const [url, setUrl] = useState(initialURL);
 
     useEffect(() => {
         setUrl(`${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${0}`)
@@ -51,16 +52,24 @@ const PokemonListComponent = () => {
             let response = await getAllPokemon(url)
             setNextUrl(response.next);
             setPrevUrl(response.previous);
-            await loadPokemon(response.results);
+            const pokemons = await loadPokemon(response.results);
+            if (searchTerm && Boolean(searchTerm)) {
+                const searchedPokemon = searchPokemons(searchTerm);
+                setPokemonData(searchedPokemon)
+            } else {
+                setPokemonData(pokemons)
+            }
+
             setLoading(false);
         }
         fetchData();
-    }, [url])
+    }, [url, searchTerm])
 
     const next = async () => {
         setLoading(true);
         let data = await getAllPokemon(nextUrl);
-        await loadPokemon(data.results);
+        const pokemons = await loadPokemon(data.results);
+        setPokemonData(pokemons);
         setSearchTerm('')
         setNextUrl(data.next);
         setPrevUrl(data.previous);
@@ -71,7 +80,8 @@ const PokemonListComponent = () => {
         if (!prevUrl) return;
         setLoading(true);
         let data = await getAllPokemon(prevUrl);
-        await loadPokemon(data.results);
+        const pokemons = await loadPokemon(data.results);
+        setPokemonData(pokemons);
         setSearchTerm('');
         setNextUrl(data.next);
         setPrevUrl(data.previous);
@@ -96,37 +106,33 @@ const PokemonListComponent = () => {
                 types: p.types
             }
         });
-
-        setPokemonData(_filteredPokemonData);
         localStorage.setItem('pokemons', JSON.stringify(_filteredPokemonData))
+        return _filteredPokemonData
     }
 
     const onChangeHandler = (e) => {
         setSearchTerm(e.target.value);
+        localStorage.setItem('searchTerm', e.target.value);
     }
 
-    useEffect(() => {
+    const searchPokemons = (searchTerm) => {
         const pokemons = JSON.parse(localStorage.getItem('pokemons'));
-        if(pokemons){
-            const searchedPokemonByName = pokemons.filter(p => {
-            return p.name.includes(searchTerm)
-        })
-        
-        const searchedPokemonByAbilities = pokemons.filter((p)=>p.abilities.some(a=>a.ability.name.includes(searchTerm)));
+        if (pokemons) {
+            const searchedPokemonByName = pokemons.filter(p => p.name.includes(searchTerm))
+            const searchedPokemonByAbilities = pokemons.filter((p) => p.abilities.some(a => a.ability.name.includes(searchTerm)));
 
-        const combinedArrayOfPokemons = [...searchedPokemonByName, ...searchedPokemonByAbilities].reduce((acc, current) => {
-            const x = acc.find((item) => item.name === current.name && item.id === current.id)
-            if (!x) {
-                return acc.concat([current])
-            } else {
-                return acc;
-            }
-        }, []);
+            const combinedArrayOfPokemons = [...searchedPokemonByName, ...searchedPokemonByAbilities].reduce((acc, current) => {
+                const x = acc.find((item) => item.name === current.name && item.id === current.id)
 
-            setPokemonData(combinedArrayOfPokemons);
+                if (!x) {
+                    return acc.concat([current])
+                } else {
+                    return acc;
+                }
+            }, []);
+            return combinedArrayOfPokemons
         }
-        
-    }, [searchTerm])
+    }
 
     const sortByName = () => {
         toggleNameSort(!nameSort)
