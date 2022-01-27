@@ -54,6 +54,7 @@ const PokemonListComponent = () => {
         for (const param of newUrl) {
             limitOffset[param[0]] = param[1]
         }
+        setUrl(`${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${limitOffset.offset}`)
     }, [selectedOption])
 
     useEffect(() => {
