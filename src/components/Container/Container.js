@@ -41,10 +41,19 @@ const PokemonListComponent = () => {
     const [weightSort, toggleWeightSort] = useState(false);
     const [selectedOption, setSelectedOption] = useState(options[0].value);
     const initialURL = `${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${0}`;
-    const [url, setUrl] = useState(initialURL);
+    const [url, setUrl] = useState(() => {
+        const savedUrl = localStorage.getItem('url');
+        return savedUrl || initialURL
+    });
 
     useEffect(() => {
-        setUrl(`${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${0}`)
+
+        const currentUrl = localStorage.getItem('url');
+        const newUrl = new URLSearchParams(currentUrl.split("?")[1]);
+        const limitOffset = {}
+        for (const param of newUrl) {
+            limitOffset[param[0]] = param[1]
+        }
     }, [selectedOption])
 
     useEffect(() => {
@@ -52,22 +61,24 @@ const PokemonListComponent = () => {
             let response = await getAllPokemon(url)
             setNextUrl(response.next);
             setPrevUrl(response.previous);
-            const pokemons = await loadPokemon(response.results);
-            if (searchTerm && Boolean(searchTerm)) {
-                const searchedPokemon = searchPokemons(searchTerm);
-                setPokemonData(searchedPokemon)
-            } else {
-                setPokemonData(pokemons)
-            }
 
+            localStorage.setItem('url', url);
+            const pokemons = await loadPokemon(response.results);
+            setPokemonData(pokemons);
             setLoading(false);
         }
         fetchData();
-    }, [url, searchTerm])
+    }, [url])
+
+    useEffect(() => {
+        const searchedPokemon = searchPokemons(searchTerm);
+        setPokemonData(searchedPokemon)
+    }, [searchTerm])
 
     const next = async () => {
         setLoading(true);
         let data = await getAllPokemon(nextUrl);
+        localStorage.setItem('url', nextUrl)
         const pokemons = await loadPokemon(data.results);
         setPokemonData(pokemons);
         setSearchTerm('')
@@ -80,6 +91,7 @@ const PokemonListComponent = () => {
         if (!prevUrl) return;
         setLoading(true);
         let data = await getAllPokemon(prevUrl);
+        localStorage.setItem('url', prevUrl)
         const pokemons = await loadPokemon(data.results);
         setPokemonData(pokemons);
         setSearchTerm('');
@@ -113,10 +125,12 @@ const PokemonListComponent = () => {
     const onChangeHandler = (e) => {
         setSearchTerm(e.target.value);
         localStorage.setItem('searchTerm', e.target.value);
+
     }
 
     const searchPokemons = (searchTerm) => {
         const pokemons = JSON.parse(localStorage.getItem('pokemons'));
+        console.log(pokemons)
         if (pokemons) {
             const searchedPokemonByName = pokemons.filter(p => p.name.includes(searchTerm))
             const searchedPokemonByAbilities = pokemons.filter((p) => p.abilities.some(a => a.ability.name.includes(searchTerm)));
