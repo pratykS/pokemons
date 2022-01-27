@@ -30,30 +30,38 @@ const PokemonListComponent = () => {
     const [nextUrl, setNextUrl] = useState('');
     const [prevUrl, setPrevUrl] = useState('');
     const [loading, setLoading] = useState(true);
+    
 
     const [searchTerm, setSearchTerm] = useState(() => {
         const saved = localStorage.getItem("searchTerm");
         return saved || "";
     });
 
-    const [nameSort, toggleNameSort] = useState(false);
+    const [nameSort, toggleNameSort] = useState(()=>{
+        const savedSort = localStorage.getItem('sortByName');
+        return savedSort || false
+    });
     const [heightSort, toggleHeightSort] = useState(false);
     const [weightSort, toggleWeightSort] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(options[0].value);
+
+    const [selectedOption, setSelectedOption] = useState(()=>{
+        const savedLimit = localStorage.getItem('limit');
+        return savedLimit || options[0].value
+    });
     const initialURL = `${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${0}`;
+    
     const [url, setUrl] = useState(() => {
         const savedUrl = localStorage.getItem('url');
         return savedUrl || initialURL
     });
 
     useEffect(() => {
-
-        const currentUrl = localStorage.getItem('url');
-        const newUrl = new URLSearchParams(currentUrl.split("?")[1]);
+        const newUrl = new URLSearchParams(url.split("?")[1]);
         const limitOffset = {}
         for (const param of newUrl) {
             limitOffset[param[0]] = param[1]
         }
+        localStorage.setItem('limit', selectedOption);
         setUrl(`${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${limitOffset.offset}`)
     }, [selectedOption])
 
@@ -126,12 +134,10 @@ const PokemonListComponent = () => {
     const onChangeHandler = (e) => {
         setSearchTerm(e.target.value);
         localStorage.setItem('searchTerm', e.target.value);
-
     }
 
     const searchPokemons = (searchTerm) => {
         const pokemons = JSON.parse(localStorage.getItem('pokemons'));
-        console.log(pokemons)
         if (pokemons) {
             const searchedPokemonByName = pokemons.filter(p => p.name.includes(searchTerm))
             const searchedPokemonByAbilities = pokemons.filter((p) => p.abilities.some(a => a.ability.name.includes(searchTerm)));
@@ -154,6 +160,7 @@ const PokemonListComponent = () => {
         const pokemons = JSON.parse(localStorage.getItem('pokemons'))
         const sortedPokemons = pokemons.sort((a, b) => nameSort ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
         setPokemonData(sortedPokemons);
+        localStorage.setItem('sortByName', !nameSort);
     }
 
     const sortByHeight = () => {

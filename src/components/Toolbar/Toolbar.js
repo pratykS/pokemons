@@ -2,8 +2,8 @@ import React from "react";
 import { Select } from "../Select/Select";
 const ToolbarComponent = (props) => {
 
-    const { onSearchHandler, searchTerm, nameSort, sortByName, heightSort, sortByHeight, weightSort, sortByWeight, selectedOption, setSelectedOption, selectOptions } = props
-
+    const { onSearchHandler, searchTerm, nameSort, sortByName, heightSort, sortByHeight, weightSort, sortByWeight, selectedOption, setSelectedOption, selectOptions } = props;
+    
     return (
         <div className="toolbar">
             <input className="searchbar" onChange={onSearchHandler} placeholder="Search your favourite pokemon by name or ability" value={searchTerm}></input>
