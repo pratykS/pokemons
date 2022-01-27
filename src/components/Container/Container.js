@@ -30,39 +30,42 @@ const PokemonListComponent = () => {
     const [nextUrl, setNextUrl] = useState('');
     const [prevUrl, setPrevUrl] = useState('');
     const [loading, setLoading] = useState(true);
-    
+
 
     const [searchTerm, setSearchTerm] = useState(() => {
         const saved = localStorage.getItem("searchTerm");
         return saved || "";
     });
 
-    const [nameSort, toggleNameSort] = useState(()=>{
+    const [nameSort, toggleNameSort] = useState(() => {
         const savedSort = localStorage.getItem('sortByName');
         return savedSort || false
     });
     const [heightSort, toggleHeightSort] = useState(false);
     const [weightSort, toggleWeightSort] = useState(false);
 
-    const [selectedOption, setSelectedOption] = useState(()=>{
+    const [selectedOption, setSelectedOption] = useState(() => {
         const savedLimit = localStorage.getItem('limit');
         return savedLimit || options[0].value
     });
     const initialURL = `${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${0}`;
-    
+
     const [url, setUrl] = useState(() => {
         const savedUrl = localStorage.getItem('url');
         return savedUrl || initialURL
     });
 
     useEffect(() => {
+        
         const newUrl = new URLSearchParams(url.split("?")[1]);
         const limitOffset = {}
-        for (const param of newUrl) {
+        // eslint-disable-next-line
+        for (let param of newUrl) {
             limitOffset[param[0]] = param[1]
         }
         localStorage.setItem('limit', selectedOption);
         setUrl(`${pokemonApiBaseUrl}?limit=${selectedOption}&offset=${limitOffset.offset}`)
+        // eslint-disable-next-line
     }, [selectedOption])
 
     useEffect(() => {
@@ -72,22 +75,31 @@ const PokemonListComponent = () => {
             setPrevUrl(response.previous);
 
             localStorage.setItem('url', url);
-            const pokemons = await loadPokemon(response.results);
-            setPokemonData(pokemons);
+            if (searchTerm && Boolean(searchTerm)) {
+                const searchedPokemon = searchPokemons(searchTerm);
+                setPokemonData(searchedPokemon)
+            }else{
+                const pokemons = await loadPokemon(response.results);
+                setPokemonData(pokemons);
+                
+            }
             setLoading(false);
+
         }
         fetchData();
+        // eslint-disable-next-line
     }, [url])
 
     useEffect(() => {
         const searchedPokemon = searchPokemons(searchTerm);
-        setPokemonData(searchedPokemon)
+        setPokemonData(searchedPokemon);
     }, [searchTerm])
 
     const next = async () => {
         setLoading(true);
         let data = await getAllPokemon(nextUrl);
-        localStorage.setItem('url', nextUrl)
+        localStorage.setItem('url', nextUrl);
+        localStorage.removeItem('searchTerm');
         const pokemons = await loadPokemon(data.results);
         setPokemonData(pokemons);
         setSearchTerm('')
@@ -100,7 +112,8 @@ const PokemonListComponent = () => {
         if (!prevUrl) return;
         setLoading(true);
         let data = await getAllPokemon(prevUrl);
-        localStorage.setItem('url', prevUrl)
+        localStorage.setItem('url', prevUrl);
+        localStorage.removeItem('searchTerm');
         const pokemons = await loadPokemon(data.results);
         setPokemonData(pokemons);
         setSearchTerm('');
@@ -139,6 +152,7 @@ const PokemonListComponent = () => {
     const searchPokemons = (searchTerm) => {
         const pokemons = JSON.parse(localStorage.getItem('pokemons'));
         if (pokemons) {
+
             const searchedPokemonByName = pokemons.filter(p => p.name.includes(searchTerm))
             const searchedPokemonByAbilities = pokemons.filter((p) => p.abilities.some(a => a.ability.name.includes(searchTerm)));
 
