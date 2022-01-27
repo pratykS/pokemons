@@ -1,0 +1,89 @@
+p {
+    margin: 0;
+}
+
+.p-card {
+	position: relative;
+	height: auto;
+	color: white;
+    background:#414141;
+    width:350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Character Area */
+.p-card > .character-area > img.character {
+	position: absolute;
+	height: 300px;
+	top: -30px;
+	left: 50%;
+	transform: translate(-50%);
+}
+.p-card > .character-area {
+	width: 100%;
+	height: 225px;
+	background-size: cover;
+	background-position: center;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+/* Card Details */
+.p-card > .details {
+	padding: 0 10px;
+	margin-top: 40px;
+}
+.p-card > .details > span { text-transform: uppercase; }
+
+.p-card > ul {
+    margin:0
+}
+/* Card Stats */
+.p-card > .stats {
+    display: flex;
+	padding: 0;
+}
+.p-card > .stats > li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 50%;
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 5px;
+    color: #fff;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    align-content: center;
+}
+.p-card > .stats > li > h5 { margin: 0; }
+.p-card > .stats > li:hover { background-color: #fff5; }
+
+/* Hover Effects */
+.p-card:hover > .character-area { height: 235px; }
+.p-card:hover > .character-area > img.character {
+  height: 330px;
+  top: -45px;
+}
+.p-card:hover > .details { margin-top: 30px; }
+
+
+.p-card { box-shadow: 0 0 25px rgba(39, 38, 39, 0.55); }
+.p-card:hover { box-shadow: 0 5px 35px rgb(98, 100, 98); }
+.p-card > .details > span { color: rgb(69, 204, 51); }
+.p-card > .stats {
+	background: #313131;
+}
+.p-card > .details-btn{
+    width:100%;
+    height:50px;
+    background: #212121;
+    border:none;
+}
+
+.p-card > .details-btn > a {
+    color:white;
+}
+

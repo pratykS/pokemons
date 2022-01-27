@@ -1,0 +1,43 @@
+* {
+    box-sizing: border-box;
+}
+
+.grid-container {
+    width: 90%;
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 30px;
+    padding:20px 0px;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.btn button {
+    border-style: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    background: #30a7d7;
+    color: #fff;
+    font-size: 1em;
+}
+
+  .chip {
+    display: inline-block;
+    padding: 0px 10px;
+    height: auto;
+    font-size: 12px;
+    line-height: 25px;
+    border-radius: 25px;
+    background-color: #141010;
+    color: white;
+    margin: 3px;
+  }
+  .green{
+    background: #EC625F;
+  }
