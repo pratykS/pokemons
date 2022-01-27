@@ -1,5 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
+Watch it in action : https://pokemons-kohl.vercel.app/
 
 ## Scope
   1. - List of all pokemons - Grid Layout
@@ -13,6 +12,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   
 ## Api used : 
  https://pokeapi.co/docs/v2
+ 
+ 
+ 
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
