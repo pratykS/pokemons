@@ -111,10 +111,8 @@ const PokemonListComponent = () => {
             const searchedPokemonByName = pokemons.filter(p => {
             return p.name.includes(searchTerm)
         })
-
-        const searchedPokemonByAbilities = pokemons.map((pokemon) => {
-            return { ...pokemon, abilities: pokemon.abilities.filter((a) => a.ability.name.includes(searchTerm)) }
-        }).filter(pokemon => pokemon.abilities.length > 0);
+        
+        const searchedPokemonByAbilities = pokemons.filter((p)=>p.abilities.some(a=>a.ability.name.includes(searchTerm)));
 
         const combinedArrayOfPokemons = [...searchedPokemonByName, ...searchedPokemonByAbilities].reduce((acc, current) => {
             const x = acc.find((item) => item.name === current.name && item.id === current.id)
