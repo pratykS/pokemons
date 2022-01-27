@@ -1,14 +1,15 @@
 Watch it in action : https://pokemons-kohl.vercel.app/
 
 ## Scope
-  1. - List of all pokemons - Grid Layout
-  2. - Pokemons UI Card
-  3. - Search Pokemon by Name or Ability
-  4. - Sort Pokemons by Name
-  5. - Sort Pokemons by Height
-  6. - Sort Pokemons by Weight
-  7. - Ability to display the number of Pokemon in each page (10,20,50)
-  8. - Details Page - Showing the properties of Pokemon
+  1. List of all pokemons - Grid Layout
+  2. Pokemons UI Card
+  3. Search Pokemon by Name or Ability
+  4. Sort Pokemons by Name
+  5. Sort Pokemons by Height
+  6. Sort Pokemons by Weight
+  7. Ability to display the number of Pokemon in each page (10,20,50)
+  8. Details Page - Showing the properties of Pokemon
+  9. Paginate to next and previous page
   
 ## Api used : 
  https://pokeapi.co/docs/v2
