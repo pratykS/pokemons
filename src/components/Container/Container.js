@@ -106,8 +106,9 @@ const PokemonListComponent = () => {
     }
 
     useEffect(() => {
-        const pokemons = JSON.parse(localStorage.getItem('pokemons'))
-        const searchedPokemonByName = pokemons.filter(p => {
+        const pokemons = JSON.parse(localStorage.getItem('pokemons'));
+        if(pokemons){
+            const searchedPokemonByName = pokemons.filter(p => {
             return p.name.includes(searchTerm)
         })
 
@@ -124,7 +125,9 @@ const PokemonListComponent = () => {
             }
         }, []);
 
-        setPokemonData(combinedArrayOfPokemons);
+            setPokemonData(combinedArrayOfPokemons);
+        }
+        
     }, [searchTerm])
 
     const sortByName = () => {
